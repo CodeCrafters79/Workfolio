@@ -91,10 +91,6 @@
             android:screenOrientation="locked"
             android:exported="false" />
         <activity
-            android:name=".MainActivity"
-            android:screenOrientation="locked"
-            android:exported="false" />
-        <activity
             android:name=".SignupActivity"
             android:screenOrientation="locked"
             android:exported="false" />
@@ -104,7 +100,6 @@
             android:exported="false" />
         <activity
             android:name=".SplashActivity"
-            android:screenOrientation="locked"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
