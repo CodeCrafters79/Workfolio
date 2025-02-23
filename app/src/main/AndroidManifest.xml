@@ -15,6 +15,12 @@
         android:theme="@style/Theme.Workfolio"
         tools:targetApi="31">
         <activity
+            android:name=".EarningsActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ManagePostActivity2"
+            android:exported="false" />
+        <activity
             android:name=".SearchActivity"
             android:exported="false" />
         <activity

@@ -55,7 +55,7 @@ public class DashboardHR extends AppCompatActivity {
         toggle.syncState();
 
         CircleImageView profileImage = findViewById(R.id.profile_image);
-        profileImage.setImageResource(R.drawable.icon_freelancer);
+        profileImage.setImageResource(R.drawable.icon_hr);
         profileImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

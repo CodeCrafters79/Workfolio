@@ -33,7 +33,6 @@ public class SplashActivity extends AppCompatActivity {
 
         new Handler().postDelayed(() -> {
             Intent intent;
-            Toast.makeText(this, isSignup, Toast.LENGTH_SHORT).show();
 
             if (isSignup.equals("true")) {
                 SharedPreferences rememberPref = getSharedPreferences(ConstantSp.REMEMBER, MODE_PRIVATE);

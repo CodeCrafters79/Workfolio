@@ -1,6 +1,7 @@
 package it.dtech.workfolio;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.MenuItem;
@@ -78,39 +79,36 @@ public class ManagePostActivity extends AppCompatActivity {
     }
 
     private void fetchDataFromDatabase() {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                Connection con = DatabaseConnection.connect();
-                if (con == null) {
-                    return;
-                }
-                SharedPreferences sp = getSharedPreferences(ConstantSp.COMPANY_NAME, MODE_PRIVATE);
-                String sql = "SELECT JOB_TITLE, CATEGORY, BUDGET, CURR_DATE FROM WF_NEWPOST WHERE COMPANY_NAME = '"+ sp.getString(ConstantSp.COMPANY_NAME, "") +"'";
-                List<JobPost> tempJobPostList = new ArrayList<>();
+        new Thread(() -> {
+            Connection con = DatabaseConnection.connect();
+            if (con == null) {
+                return;
+            }
+            SharedPreferences sp = getSharedPreferences(ConstantSp.COMPANY_NAME, MODE_PRIVATE);
+            String sql = "SELECT ID, JOB_TITLE, CATEGORY, BUDGET, CURR_DATE, DEADLINE, DESCRIPTION FROM WF_NEWPOST WHERE COMPANY_NAME = '" + sp.getString(ConstantSp.COMPANY_NAME, "") + "'";
+            List<JobPost> tempJobPostList = new ArrayList<>();
 
-                try (Statement st = con.createStatement(); ResultSet resultSet = st.executeQuery(sql)) {
-                    while (resultSet.next()) {
-                        String jobTitle = resultSet.getString("JOB_TITLE");
-                        String category = resultSet.getString("CATEGORY");
-                        String budget = resultSet.getString("BUDGET");
-                        String currDate = resultSet.getString("CURR_DATE");
-                        tempJobPostList.add(new JobPost(jobTitle, category, budget, currDate));
-                    }
-
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            jobPostList.clear();
-                            jobPostList.addAll(tempJobPostList);
-                            filteredList.clear();
-                            filteredList.addAll(jobPostList);
-                            jobPostAdapter.notifyDataSetChanged();
-                        }
-                    });
-                } catch (SQLException e) {
-                    e.printStackTrace();
+            try (Statement st = con.createStatement(); ResultSet resultSet = st.executeQuery(sql)) {
+                while (resultSet.next()) {
+                    int id = resultSet.getInt("ID");
+                    String jobTitle = resultSet.getString("JOB_TITLE");
+                    String category = resultSet.getString("CATEGORY");
+                    String budget = resultSet.getString("BUDGET");
+                    String currDate = resultSet.getString("CURR_DATE");
+                    String deadline = resultSet.getString("DEADLINE");
+                    String description = resultSet.getString("DESCRIPTION");
+                    tempJobPostList.add(new JobPost(id, jobTitle, category, budget, currDate, deadline, description));
                 }
+
+                runOnUiThread(() -> {
+                    jobPostList.clear();
+                    jobPostList.addAll(tempJobPostList);
+                    filteredList.clear();
+                    filteredList.addAll(jobPostList);
+                    jobPostAdapter.notifyDataSetChanged();
+                });
+            } catch (SQLException e) {
+                e.printStackTrace();
             }
         }).start();
     }
@@ -125,18 +123,31 @@ public class ManagePostActivity extends AppCompatActivity {
     }
 }
 
-// JobPost Model
 class JobPost {
+    private final int id;
     private final String title;
     private final String category;
     private final String budget;
     private final String currDate;
+    private final String deadline;
+    private final String description;
 
-    public JobPost(String title, String category, String budget, String currDate) {
+    public JobPost(int id, String title, String category, String budget, String currDate, String deadline, String description) {
+        this.id = id;
         this.title = title;
         this.category = category;
         this.budget = budget;
         this.currDate = currDate;
+        this.deadline = deadline;
+        this.description = description;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public String getDeadline() {
+        return deadline;
     }
 
     public String getTitle() {
@@ -154,9 +165,12 @@ class JobPost {
     public String getCurrDate() {
         return currDate;
     }
+
+    public String getDescription() {
+        return description;
+    }
 }
 
-// RecyclerView Adapter
 class JobPostAdapter extends RecyclerView.Adapter<JobPostAdapter.ViewHolder> {
     private final List<JobPost> jobList;
 
@@ -179,6 +193,16 @@ class JobPostAdapter extends RecyclerView.Adapter<JobPostAdapter.ViewHolder> {
         holder.category.setText(job.getCategory());
         holder.budget.setText("Cost : " + job.getBudget());
         holder.date.setText("Date : " + job.getCurrDate());
+        holder.itemView.setOnClickListener(v -> {
+            Intent intent = new Intent(v.getContext(), EditPost.class);
+            intent.putExtra("ID", job.getId());
+            intent.putExtra("JOB_TITLE", job.getTitle());
+            intent.putExtra("CATEGORY", job.getCategory());
+            intent.putExtra("BUDGET", job.getBudget());
+            intent.putExtra("DEADLINE", job.getDeadline());
+            intent.putExtra("DESCRIPTION", job.getDescription());
+            v.getContext().startActivity(intent);
+        });
     }
 
     @Override
