@@ -19,6 +19,8 @@ import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.google.android.material.navigation.NavigationView;
 
+import de.hdodenhof.circleimageview.CircleImageView;
+
 public class DashboardHR extends AppCompatActivity {
 
     private DrawerLayout drawerLayout;
@@ -52,6 +54,17 @@ public class DashboardHR extends AppCompatActivity {
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
 
+        CircleImageView profileImage = findViewById(R.id.profile_image);
+        profileImage.setImageResource(R.drawable.icon_freelancer);
+        profileImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(DashboardHR.this, UpdateProfileHR.class);
+                startActivity(intent);
+                finish();
+            }
+        });
+
         // Retrieve SharedPreferences
         SharedPreferences sp = getSharedPreferences(ConstantSp.NAME, Context.MODE_PRIVATE);
         String fullName = sp.getString(ConstantSp.NAME, "");
@@ -82,7 +95,7 @@ public class DashboardHR extends AppCompatActivity {
                 } else if (id == R.id.project_status) {
                     // startActivity(new Intent(DashboardHR.this, ProjectStatusActivity.class));
                 } else if (id == R.id.post_history) {
-                    // startActivity(new Intent(DashboardHR.this, AllPostsActivity.class));
+                    startActivity(new Intent(DashboardHR.this, ManagePostActivity.class));
                 } else if (id == R.id.past_transactions) {
                     // startActivity(new Intent(DashboardHR.this, PastTransactionsActivity.class));
                 } else if (id == R.id.settings) {
@@ -90,10 +103,8 @@ public class DashboardHR extends AppCompatActivity {
                 } else if (id == R.id.about_us) {
                     startActivity(new Intent(DashboardHR.this, AboutusActivity.class));
                 } else if (id == R.id.nav_logout) {
+                    // Logout logic (Optional: Clear session and navigate to login)
                     startActivity(new Intent(DashboardHR.this, LoginActivity.class));
-                    SharedPreferences sp = getSharedPreferences(ConstantSp.REMEMBER, MODE_PRIVATE);
-                    sp.edit().putString(ConstantSp.REMEMBER, "false").apply();
-                    finish();
                 }
 
                 drawerLayout.closeDrawer(GravityCompat.START);

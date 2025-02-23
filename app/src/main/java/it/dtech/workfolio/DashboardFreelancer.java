@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.view.View;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
@@ -36,7 +38,14 @@ public class DashboardFreelancer extends AppCompatActivity {
 
         CircleImageView profileImage = findViewById(R.id.profile_image);
         profileImage.setImageResource(R.drawable.icon_freelancer);
-
+        profileImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(DashboardFreelancer.this,UpdateProfileFreelancer.class);
+                startActivity(intent);
+                finish();
+            }
+        });
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -47,13 +56,13 @@ public class DashboardFreelancer extends AppCompatActivity {
                 } else if (id == R.id.nav_earnings) {
                     // startActivity(new Intent(DashboardFreelancer.this, EarningsActivity.class));
                 } else if (id == R.id.nav_update_profile) {
-                    // startActivity(new Intent(DashboardFreelancer.this, ProfileActivity.class));
+                    startActivity(new Intent(DashboardFreelancer.this, UpdateProfileFreelancer.class));
                 } else if (id == R.id.nav_search) {
-                    // startActivity(new Intent(DashboardFreelancer.this, SearchActivity.class));
+                    startActivity(new Intent(DashboardFreelancer.this, SearchActivity.class));
                 } else if (id == R.id.nav_settings) {
                     startActivity(new Intent(DashboardFreelancer.this, SettingsActivity.class));
                 } else if (id == R.id.nav_about) {
-                    // startActivity(new Intent(DashboardFreelancer.this, AboutUsActivity.class));
+                    startActivity(new Intent(DashboardFreelancer.this, AboutusActivity.class));
                 } else if (id == R.id.nav_logout) {
                     startActivity(new Intent(DashboardFreelancer.this, LoginActivity.class));
                     SharedPreferences sp = getSharedPreferences(String.valueOf(ConstantSp.REMEMBER), MODE_PRIVATE);
@@ -63,6 +72,6 @@ public class DashboardFreelancer extends AppCompatActivity {
                 drawerLayout.closeDrawers();
                 return true;
             }
-        });
-    }
+   });
+}
 }
